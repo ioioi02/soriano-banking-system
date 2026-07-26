@@ -1,6 +1,7 @@
 package org.banking.service;
 
 import org.banking.dao.EmployeeDAO;
+import org.banking.dto.EmployeeAccount;
 import org.banking.model.Employee;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -14,18 +15,13 @@ public class EmployeeService {
         this.employeeDAO = employeeDAO;
     }
 
-    public Employee authenticateEmployee(String employeeId, String securityPassword) {
-        try {
-            String password = employeeDAO.getPasswordByEmployeeId(employeeId);
+    public Employee authenticateEmployee(String employeeId, String securityPassword) throws SQLException {
+        EmployeeAccount employeeAccount = employeeDAO.findEmployeeByEmployeeId(employeeId);
 
-            if (password == null) { return null; }
-
-            if (BCrypt.checkpw(securityPassword, password)) {
-                return employeeDAO.findEmployeeByEmployeeId(employeeId);
-            }
-        } catch (SQLException e) {
-            System.err.println("Failed to retrieve employee information: " + e.getMessage());
+        if (employeeAccount != null && BCrypt.checkpw(securityPassword, employeeAccount.password())) {
+            return employeeAccount.employee();
         }
+
         return null;
     }
 }
