@@ -1,0 +1,19 @@
+# =============================================================================
+# Banking Management System — Application Configuration (EXAMPLE)
+# =============================================================================
+# Copy this file to: src/main/resources/application.properties
+# Fill in your actual database credentials.
+# NEVER commit the real application.properties to source control.
+# =============================================================================
+
+# JDBC connection URL (adjust host/port/database name as needed)
+db.url=
+
+# MySQL username
+db.username=
+
+# MySQL password
+db.password=
+
+# Application timezone
+app.timezone=

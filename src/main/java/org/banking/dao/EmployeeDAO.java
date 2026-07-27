@@ -6,5 +6,5 @@ import java.sql.SQLException;
 
 public interface EmployeeDAO {
 
-    EmployeeAccount findEmployeeByEmployeeId(String employeeId) throws SQLException;
+    EmployeeAccount findEmployeeByEmployeeId(String empId) throws SQLException;
 }

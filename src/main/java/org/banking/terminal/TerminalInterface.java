@@ -1,11 +1,19 @@
-package org.banking.app;
+package org.banking.terminal;
 
+import org.banking.dao.BankAccountDAO;
+import org.banking.dao.BankTransactionDAO;
 import org.banking.dao.EmployeeDAO;
+import org.banking.dao.impl.BankAccountDAOImpl;
+import org.banking.dao.impl.BankTransactionDAOImpl;
 import org.banking.dao.impl.EmployeeDAOImpl;
+import org.banking.dto.BankAccountCreationDetail;
 import org.banking.dto.EmployeeCredential;
 import org.banking.model.Employee;
+import org.banking.service.BankAccountService;
+import org.banking.service.BankTransactionService;
 import org.banking.service.EmployeeService;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Scanner;
 
@@ -14,6 +22,8 @@ public class TerminalInterface {
     private final Scanner scanner;
 
     private final EmployeeService employeeService;
+    private final BankAccountService bankAccountService;
+    private final BankTransactionService bankTransactionService;
 
     private Employee currentSession = null;
     private boolean isRunning;
@@ -23,6 +33,12 @@ public class TerminalInterface {
 
         EmployeeDAO employeeDAO = new EmployeeDAOImpl();
         employeeService = new EmployeeService(employeeDAO);
+
+        BankAccountDAO bankAccountDAO = new BankAccountDAOImpl();
+        bankAccountService = new BankAccountService(bankAccountDAO);
+
+        BankTransactionDAO bankTransactionDAO = new BankTransactionDAOImpl();
+        bankTransactionService = new BankTransactionService(bankAccountDAO, bankTransactionDAO);
     }
 
     public void start() {
@@ -44,10 +60,7 @@ public class TerminalInterface {
         String action = scanner.nextLine();
 
         switch (action) {
-            case "1" -> {
-                System.out.println();
-                processLogin();
-            }
+            case "1" -> processLogin();
             case "2" -> shutdownTerminal();
             default -> invalidInputMessage();
         }
@@ -60,14 +73,14 @@ public class TerminalInterface {
         String action = scanner.nextLine();
 
         switch (action) {
-            case "1" -> System.out.println("Create Account");
-            case "2" -> System.out.println("Balance Inquiry");
-            case "3" -> System.out.println("Deposit");
-            case "4" -> System.out.println("Withdraw");
-            case "5" -> System.out.println("Transfer");
-            case "6" -> System.out.println("Transaction History");
-            case "7" -> System.out.println("Mini Statement");
-            case "8" -> System.out.println("List All Accounts");
+            case "1" -> bankAccountService.createBankAccount(promptBankAccountCreationDetailRequest());
+            case "2" -> bankAccountService.currentBalanceInquiry(promptAccountNumberInput());
+            case "3" -> bankTransactionService.deposit(promptAccountNumberInput(), promptPositiveAmountInput());
+            case "4" -> bankTransactionService.withdraw(promptAccountNumberInput(), promptPositiveAmountInput());
+            case "5" -> bankTransactionService.moneyTransfer(promptAccountNumberInput("sender"), promptAccountNumberInput("receiver"), promptPositiveAmountInput());
+            case "6" -> bankTransactionService.transactionHistory(promptAccountNumberInput());
+            case "7" -> bankTransactionService.miniStatement(promptAccountNumberInput());
+            case "8" -> bankAccountService.listAllBankAccounts();
             case "9" -> employeeLogout();
             default -> invalidInputMessage();
         }
@@ -99,6 +112,35 @@ public class TerminalInterface {
         String securityPassword = scanner.nextLine();
 
         return new EmployeeCredential(employeeId, securityPassword);
+    }
+
+    private BankAccountCreationDetail promptBankAccountCreationDetailRequest() {
+        System.out.print("Enter account holder name: ");
+        String accountHolderName = scanner.nextLine();
+
+        System.out.print("Enter initial deposit: ");
+        BigDecimal initialDeposit = scanner.nextBigDecimal();
+        scanner.nextLine();
+
+        return new BankAccountCreationDetail(accountHolderName, initialDeposit, currentSession.getEmployeeId());
+    }
+
+    private String promptAccountNumberInput() {
+        System.out.print("Enter account number: ");
+        return scanner.nextLine();
+    }
+
+    private String promptAccountNumberInput(String label) {
+        System.out.print("Enter " + label + " account number: ");
+        return scanner.nextLine();
+    }
+
+    private BigDecimal promptPositiveAmountInput() {
+        System.out.print("Enter positive amount: ");
+        BigDecimal positiveAmount = scanner.nextBigDecimal();
+        scanner.nextLine();
+
+        return positiveAmount;
     }
 
     private void printWelcomeMenu() {
@@ -133,7 +175,7 @@ public class TerminalInterface {
 
     private void printLoginHeader() {
         System.out.print("""
-                ==========================================
+                \n==========================================
                          [Security Authentication]
                 ==========================================
                 """);

@@ -1,16 +1,20 @@
 package org.banking.model;
 
+import java.time.Instant;
+
 public class Employee {
 
-    private Integer id;
+    private Long id;
     private String employeeId;
     private String lastname;
     private String firstname;
     private String middlename;
     private String suffix;
     private Boolean isActive;
+    private Instant created_at;
+    private Instant updated_at;
 
-    public Employee(Integer id, String employeeId, String lastname, String firstname, String middlename, String suffix, Boolean isActive) {
+    public Employee(Long id, String employeeId, String lastname, String firstname, String middlename, String suffix, Boolean isActive, Instant created_at, Instant updated_at) {
         this.id = id;
         this.employeeId = employeeId;
         this.lastname = lastname;
@@ -18,13 +22,15 @@ public class Employee {
         this.middlename = middlename;
         this.suffix = suffix;
         this.isActive = isActive;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -74,6 +80,22 @@ public class Employee {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
+    }
+
+    public Instant getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Instant created_at) {
+        this.created_at = created_at;
+    }
+
+    public Instant getUpdated_at() {
+        return updated_at;
+    }
+
+    public void setUpdated_at(Instant updated_at) {
+        this.updated_at = updated_at;
     }
 
     public String getfullName() {

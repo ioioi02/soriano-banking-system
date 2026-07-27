@@ -1,18 +1,20 @@
 package org.banking.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 public class BankTransaction {
 
-    private Integer id;
+    private Long id;
     private String accountNumber;
     private BankTransactionType transactionType;
     private BigDecimal monetaryAmount;
     private BigDecimal balanceAfter;
     private String referenceNumber;
     private String remarks;
+    private Instant created_at;
 
-    public BankTransaction(Integer id, String accountNumber, BankTransactionType transactionType, BigDecimal monetaryAmount, BigDecimal balanceAfter, String referenceNumber, String remarks) {
+    public BankTransaction(Long id, String accountNumber, BankTransactionType transactionType, BigDecimal monetaryAmount, BigDecimal balanceAfter, String referenceNumber, String remarks, Instant created_at) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.transactionType = transactionType;
@@ -20,13 +22,14 @@ public class BankTransaction {
         this.balanceAfter = balanceAfter;
         this.referenceNumber = referenceNumber;
         this.remarks = remarks;
+        this.created_at = created_at;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -76,5 +79,13 @@ public class BankTransaction {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Instant getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(Instant created_at) {
+        this.created_at = created_at;
     }
 }
